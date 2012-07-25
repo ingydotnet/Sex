@@ -48,21 +48,16 @@ MASTURBATION
                 __PACKAGE__ . "\n";
         }
     }
+    my @modules = map { /^\?$/ ? volunteer() : $_ } @_;
 
     my %zygote = ();
     my $call_sym_table = \%{$caller.'::'};
-    foreach my $gamete (@_) {
-        my $module = $gamete eq '?' ? volunteer() : $gamete;
-        eval "require $module";
-        while( my($chromo, $rna) = each %{$module.'::'} ) {
+    foreach my $gamete (@modules) {
+        eval "use $gamete(); 1" or next;
+        while( my($chromo, $rna) = each %{$gamete.'::'} ) {
             push @{$zygote{$chromo}}, $rna;
         }
     }
-    sub volunteer {
-        my @volunteers = map {s/\.pmc?$//;s!/!::!g;$_} keys %INC;
-        $volunteers[rand @volunteers];
-    }
-
 
     while( my($chromo, $rna) = each %zygote ) {
         $call_sym_table->{$chromo} = $rna->[rand @$rna];
@@ -70,13 +65,17 @@ MASTURBATION
         #select(undef, undef, undef, 0.45);
     }
 
-    push @{$caller.'::ISA'}, @_;
+    # push @{$caller.'::ISA'}, @modules;
 
     print "\n";
 
     return 'Harry Balls who?';
 }
 
+sub volunteer {
+    my @volunteers = map {s/\.pmc?$//;s!/!::!g;$_} keys %INC;
+    $volunteers[rand @volunteers];
+}
 
 =pod
 
