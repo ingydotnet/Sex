@@ -2,6 +2,8 @@ package Sex;
 
 use strict qw(vars subs);
 
+srand;  # More exciting this way.
+
 use vars qw($VERSION);
 $VERSION = '0.69';
 
@@ -46,26 +48,26 @@ MASTURBATION
                 __PACKAGE__ . "\n";
         }
     }
-    elsif( @_ > 2 ) {
-        warn "More than two sex partners?  ".
-             "Kinky (and illegal in many states).\n";
-    }
-
 
     my %zygote = ();
     my $call_sym_table = \%{$caller.'::'};
     foreach my $gamete (@_) {
-        eval "require $gamete";
-        while( my($chromo, $rna) = each %{$gamete.'::'} ) {
+        my $module = $gamete eq '?' ? volunteer() : $gamete;
+        eval "require $module";
+        while( my($chromo, $rna) = each %{$module.'::'} ) {
             push @{$zygote{$chromo}}, $rna;
         }
+    }
+    sub volunteer {
+        my @volunteers = map {s/\.pmc?$//;s!/!::!g;$_} keys %INC;
+        $volunteers[rand @volunteers];
     }
 
 
     while( my($chromo, $rna) = each %zygote ) {
         $call_sym_table->{$chromo} = $rna->[rand @$rna];
-        print $Grunts[rand @Grunts], ' ';
-        select(undef, undef, undef, 0.45);
+        print $Grunts[rand @Grunts], "\n";
+        #select(undef, undef, undef, 0.45);
     }
 
     push @{$caller.'::ISA'}, @_;
@@ -84,52 +86,14 @@ Sex - Perl teaches the birds and the bees.
 
 =head1 SYNOPSIS
 
-  package Catholicism;
-  use Sex qw(strict Religion);
-
-  package Mormonism;
-  use Sex qw(Catholicism Sex);
-
+    package Sex::Oriented::Programming;
+    # The usual suspects + 3 volunteers
+    use Sex qw(Moose Mouse Mousse Moo Mo ? ? ?);
 
 =head1 DESCRIPTION
 
-Heterogeneous recombination of Perl packages.
-
-Given two (or more, I'm a liberal guy) packages, Sex.pm will recombine
-their symbols at random recombining them into the new module thus
-providing a cross-section of its functions and global variables.
-It will also push the parent classes onto the child's @ISA array.
-
-So you could do:
-
-    package Net::SFTP;
-    use Sex qw(Net::FTP Net::SSLeay);
-
-And get a secure FTP client!
-
-The recombination occurs in such a way to ensure that the child will
-contain -all- the symbols of both parents.  Should two (or more)
-parents wish to bestow the same symbol on its child one will be chosen
-at random.
-
-For example:
-
-    package DejaNews;
-    use Sex qw(LWP::Simple Net::NNTP);
-
-LWP::Simple and Net::NNTP both have a head() function and thus they
-try to give head() to their child.  Sex.pm will suck the head() off
-either LWP::Simple or Net::NNTP and stick it to DejaNews.  Afterwards,
-DejaNews can procede to finally use its head().
-
-Here's another timely example for Sex in the 21st century:
-
-    package URI::Bot9000;
-    use Sex qw(URI LWP::RobotUA protected);
-
-Because of the dire consequences of having sex with URI, one should
-make sure you're well protected.
-
+This is like the Sex you get from Schwern, but '?' will pull in a random
+volunteer from %INC.
 
 =head1 BUGS
 
@@ -140,7 +104,9 @@ computer.  Please be sure your programs are Safe before they have Sex.
     use Sex qw(Safe Sex);
 
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+Ingy 'The (ex-)King of Schwern' döt Net <ingy@cpan.org>
 
 Michael 'The Porn King of CMU' Schwern  <schwern@pobox.com>
 
