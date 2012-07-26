@@ -1,4 +1,9 @@
 ---
+version: 0.03
+date:    Thu Jul 26 11:03:45 PDT 2012
+changes:
+- Add utf8 pöd encöding
+---
 version: 0.02
 date:    Wed Jul 25 20:50:25 PDT 2012
 changes:

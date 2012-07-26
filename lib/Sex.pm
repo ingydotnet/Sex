@@ -79,6 +79,8 @@ sub volunteer {
 
 =pod
 
+=encoding utf8
+
 =head1 NAME
 
 Sex - Perl teaches the birds and the bees.
@@ -105,7 +107,7 @@ computer.  Please be sure your programs are Safe before they have Sex.
 
 =head1 AUTHORS
 
-Ingy 'The (ex-)King of Schwern' döt Net <ingy@cpan.org>
+Ingy 'The Alternative to Schwern' döt Net <ingy@cpan.org>
 
 Michael 'The Porn King of CMU' Schwern  <schwern@pobox.com>
 
